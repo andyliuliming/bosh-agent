@@ -51,6 +51,7 @@ var _ = Describe("UbuntuNetManager (IPv6)", func() {
 			addressBroadcaster,
 			kernelIPv6,
 			logger,
+			false,
 		).(UbuntuNetManager)
 	})
 

@@ -67,6 +67,7 @@ var _ = Describe("LoadConfigFromPath", func() {
 		}`)
 
 		config, err := LoadConfigFromPath(fs, "/fake-config.conf")
+		Expect(config.Platform.Linux.DHClientConfig.SendHostname).To(Equal(false))
 		Expect(err).ToNot(HaveOccurred())
 		Expect(config).To(Equal(Config{
 			Platform: boshplatform.Options{
@@ -109,6 +110,43 @@ var _ = Describe("LoadConfigFromPath", func() {
 				},
 			},
 		}))
+	})
+
+	It("returns true if send hostname is configured", func() {
+		fs.WriteFileString("/fake-config.conf", `{
+			"Platform": {
+				"Linux": {
+					"UseDefaultTmpDir": true,
+					"UsePreformattedPersistentDisk": true,
+					"BindMountPersistentDisk": true,
+					"SkipDiskSetup": true,
+					"DevicePathResolutionType": "virtio",
+					"DHClientConfig":{
+						"SendHostname": true
+					}
+				}
+			}
+		}`)
+
+		config, err := LoadConfigFromPath(fs, "/fake-config.conf")
+		Expect(config.Platform.Linux.DHClientConfig.SendHostname).To(Equal(true))
+		Expect(err).ToNot(HaveOccurred())
+
+		fs.WriteFileString("/fake-config.conf", `{
+			"Platform": {
+				"Linux": {
+					"UseDefaultTmpDir": true,
+					"UsePreformattedPersistentDisk": true,
+					"BindMountPersistentDisk": true,
+					"SkipDiskSetup": true,
+					"DevicePathResolutionType": "virtio"
+				}
+			}
+		}`)
+
+		config, err = LoadConfigFromPath(fs, "/fake-config.conf")
+		Expect(config.Platform.Linux.DHClientConfig.SendHostname).To(Equal(false))
+		Expect(err).ToNot(HaveOccurred())
 	})
 
 	It("returns empty config if path is empty", func() {

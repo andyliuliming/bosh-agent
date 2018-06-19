@@ -49,6 +49,11 @@ const (
 	minRootEphemeralSpaceInBytes = uint64(1024 * 1024 * 1024)
 )
 
+type DHClientConfig struct {
+	// When set to true the agent will configure dhclient to send the real hostname
+	SendHostname bool
+}
+
 type LinuxOptions struct {
 	// When set to true loop back device
 	// is not going to be overlayed over /tmp to limit /tmp dir size
@@ -80,6 +85,9 @@ type LinuxOptions struct {
 	// Strategy for resolving ephemeral & persistent disk partitioners;
 	// possible values: parted, "" (default is sfdisk if disk < 2TB, parted otherwise)
 	PartitionerType string
+
+	// More configs for the dhclient.
+	DHClientConfig DHClientConfig
 }
 
 type linux struct {
